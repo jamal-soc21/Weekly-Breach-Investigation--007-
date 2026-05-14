@@ -1,0 +1,74 @@
+Weekly Breach Investigation
+Breach: Composer Token Leak — GitHub Actions Exposure
+Analyst: Jamal Mahmoad
+Date: 2026-05-14
+
+1. Executive Summary
+
+A flaw in Composer, the PHP dependency manager, caused GitHub authentication tokens to leak into publicly visible CI logs.
+The issue appeared when GitHub rolled out a new token format in April 2026. Composer rejected these tokens and printed their full values into logs, exposing credentials across thousands of projects.
+The vulnerability poses serious risks to PHP projects using GitHub Actions, especially automated workflows.
+
+2. Attack Timeline
+
+Apr 2026: GitHub introduces new token format with hyphen.
+
+Apr 2026: Composer rejects tokens, exposing them in logs.
+
+May 2026: Researchers at Socket.dev flag the issue.
+
+May 2026: Packagist urges immediate Composer update.
+
+May 2026: GitHub rolls back token format temporarily.
+
+Exploitation Path:
+
+Run Composer inside GitHub Actions workflow.
+
+Token with new format rejected.
+
+Full token value printed in CI logs.
+
+Logs accessible to anyone with permissions.
+
+Credentials potentially compromised.
+
+3. MITRE ATT&CK Mapping
+Credential Access: Unsecured Credentials (T1552)
+
+Defense Evasion: Masquerading / Error Message Exposure (T1036)
+
+Execution: Command and Scripting Interpreter (T1059)
+
+Persistence: Abuse of Configuration Files (T1112)
+
+4. Detection Opportunities
+Log Sources:
+
+GitHub Actions CI logs
+
+Composer error outputs
+
+Container runtime telemetry
+
+Detection Rules:
+
+Alert on Composer authentication failures.
+
+Monitor logs for exposed token strings.
+
+Flag abnormal use of GITHUB_TOKEN in workflows.
+
+5. Recommended Mitigations
+Update Composer: Upgrade to 2.9.8, 2.2.28 LTS, or 1.10.28.
+
+Audit Logs: Review recent CI logs for exposed tokens.
+
+Rotate Credentials: Treat any exposed token as compromised.
+
+Workflow Hardening: Avoid printing sensitive values in error messages.
+
+Analyst Notes
+This incident highlights how small validation flaws can lead to massive credential exposure.
+Even though GitHub rolled back the new format, leaked tokens remain a risk.
+Teams must patch Composer immediately and audit logs before GitHub retries the rollout
